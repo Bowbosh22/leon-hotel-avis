@@ -11,6 +11,8 @@ body{margin:0;background:var(--paper);color:var(--ink);font:400 1.0625rem/1.55 v
 .app{max-width:30rem;margin:0 auto;padding:1rem 1rem 3rem}
 .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.4rem}
 .wm{display:flex;flex-direction:column;font-family:var(--display);font-weight:800;line-height:1}
+.wm{position:relative;padding-left:2.7rem;min-height:2.2rem;justify-content:center}
+.wm::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:2.2rem;height:2.2rem;background:url(logo.png) center/contain no-repeat}
 .wm b{color:var(--lb);font-size:1.35rem;letter-spacing:.04em}
 .wm i{font-style:normal;color:var(--lg);font-size:.8rem;letter-spacing:.1em;margin-top:.12rem}
 .lang{display:flex;border:1px solid var(--soft);border-radius:2rem;overflow:hidden;background:#fff}
