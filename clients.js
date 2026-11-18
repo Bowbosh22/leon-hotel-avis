@@ -18,7 +18,7 @@ function clients(){
     var k=mail||tel||nom;if(!k)return;
     var o=map[k]||(map[k]={prenom:'',nom:'',tel:'',email:'',avis:[],rec:false});
     if(c.prenom&&!o.prenom)o.prenom=c.prenom;if(c.nom&&!o.nom)o.nom=c.nom;if(c.tel&&!o.tel)o.tel=c.tel;if(c.email&&!o.email)o.email=c.email;
-    o.avis.push(a);if(a.recontact)o.rec=true;
+    o.avis.push(a);if(a.recontact)o.rec=true;if(a.marketing)o.mkt=true;
   });
   return Object.keys(map).map(function(k){var o=map[k];o.avis.sort(function(a,b){return a.date<b.date?1:-1});
     o.moy=o.avis.reduce(function(s,a){return s+a.note},0)/o.avis.length;o.last=o.avis[0].date;return o}).sort(function(a,b){return a.last<b.last?1:-1});
@@ -33,7 +33,7 @@ function card(c){
   var acts=(c.tel?'<a href="tel:+'+digits+'">Appeler</a><a href="https://wa.me/'+digits+'" target="_blank" rel="noopener">WhatsApp</a>':'')+(c.email?'<a href="mailto:'+esc(c.email)+'">E-mail</a>':'');
   var h=c.avis.map(function(a){var lieu=a.lieu?SVC[a.service]+' · '+a.lieu:SVC[a.service];
     return '<div class="rv"><div class="hd"><b>'+esc(lieu)+(a.note<=2?' <span class="tag neg">'+(a.statut||'Nouveau')+'</span>':'')+'</b><span>'+dt(a.date)+'</span></div><div class="sts">'+stars(a.note)+'</div>'+(a.comment?'<p>'+esc(a.comment)+'</p>':'<p class="who"><i>Pas de commentaire</i></p>')+'</div>'}).join('');
-  return '<details class="cl"><summary><div class="nm"><span>'+esc(name(c))+'</span>'+(c.rec?'<span class="tag rec">À recontacter</span>':'')+'</div>'+
+  return '<details class="cl"><summary><div class="nm"><span>'+esc(name(c))+'</span>'+(c.rec?'<span class="tag rec">À recontacter</span>':'')+(c.mkt?'<span class="tag rec">Accepte les offres</span>':'')+'</div>'+
     '<div class="ct">'+ct+'</div><div class="meta"><span class="sts">'+stars(c.moy)+'</span><span>'+c.avis.length+' avis · moy. '+fmt(c.moy)+'</span><span>Dernier : '+dt(c.last)+'</span></div></summary>'+
     '<div class="hist2">'+(acts?'<div class="acts2">'+acts+'</div>':'')+h+'</div></details>';
 }

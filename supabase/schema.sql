@@ -18,10 +18,13 @@ create table if not exists public.reviews (
   tel          text check (tel    is null or char_length(tel)    <= 30),
   email        text check (email  is null or char_length(email)  <= 120),
   recontact    boolean not null default false,
+  marketing    boolean not null default false,
   statut       text not null default 'Nouveau' check (statut in ('Nouveau','En cours','Traité','Clos')),
   historique   jsonb not null default '[]'::jsonb,
   note_interne text check (note_interne is null or char_length(note_interne) <= 500)
 );
+-- (mise à jour d'une base existante : ajoute la colonne si elle manque)
+alter table public.reviews add column if not exists marketing boolean not null default false;
 create index if not exists reviews_created_idx on public.reviews (created_at desc);
 
 -- 2) Personnel autorisé (qui a accès à l'espace direction) ------------

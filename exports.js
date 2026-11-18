@@ -24,17 +24,17 @@ $('ep').addEventListener('change',function(){$('em').hidden=this.value!=='month'
 $('em').addEventListener('change',info);
 $('rep').addEventListener('click',function(){if($('rm').value)location.href='report.html?mois='+$('rm').value});
 $('xa').addEventListener('click',function(){
-  var rows=[['Code','Date','Heure','Service','Lieu','Note','Détail des notes','Commentaire','Prénom','Nom','Téléphone','E-mail','Accepte d\'être recontacté','Statut','Note interne']];
+  var rows=[['Code','Date','Heure','Service','Lieu','Note','Détail des notes','Commentaire','Prénom','Nom','Téléphone','E-mail','Accepte d\'être recontacté','Accepte les offres','Statut','Note interne']];
   list().forEach(function(a){var c=a.contact||{};
-    rows.push([a.id,dstr(a.date),tstr(a.date),SVC[a.service],a.lieu||'',a.note,Object.keys(a.details||{}).map(function(k){return k+': '+a.details[k]}).join(' | '),a.comment||'',c.prenom||'',c.nom||'',c.tel||'',c.email||'',a.recontact?'Oui':'Non',a.statut||'Nouveau',a.noteInterne||''])});
+    rows.push([a.id,dstr(a.date),tstr(a.date),SVC[a.service],a.lieu||'',a.note,Object.keys(a.details||{}).map(function(k){return k+': '+a.details[k]}).join(' | '),a.comment||'',c.prenom||'',c.nom||'',c.tel||'',c.email||'',a.recontact?'Oui':'Non',a.marketing?'Oui':'Non',a.statut||'Nouveau',a.noteInterne||''])});
   save('avis-leon-hotel-'+suffix()+'.csv',csv(rows));
 });
 $('xc').addEventListener('click',function(){
-  var rows=[['Prénom','Nom','Téléphone','E-mail','Nombre d\'avis','Note moyenne','Dernier avis','À recontacter']];
+  var rows=[['Prénom','Nom','Téléphone','E-mail','Nombre d\'avis','Note moyenne','Dernier avis','À recontacter','Accepte les offres']];
   var m=new Date();
   window.ClientsData().forEach(function(c){
     var l=c.avis.filter(inRange);if(!l.length)return;
-    rows.push([c.prenom,c.nom,c.tel,c.email,l.length,(Math.round(l.reduce(function(s,a){return s+a.note},0)/l.length*10)/10).toString().replace('.',','),dstr(l[0].date),l.some(function(a){return a.recontact})?'Oui':'Non'])});
+    rows.push([c.prenom,c.nom,c.tel,c.email,l.length,(Math.round(l.reduce(function(s,a){return s+a.note},0)/l.length*10)/10).toString().replace('.',','),dstr(l[0].date),l.some(function(a){return a.recontact})?'Oui':'Non',l.some(function(a){return a.marketing})?'Oui':'Non'])});
   save('clients-leon-hotel-'+suffix()+'.csv',csv(rows));
 });
 Store.ready().then(info);

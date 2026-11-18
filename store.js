@@ -66,13 +66,14 @@ window.Auth={
 function fromRow(r){
   var has=r.prenom||r.nom||r.tel||r.email;
   return {id:r.id,date:r.created_at,service:r.service,lieu:r.lieu||null,note:r.note,details:r.details||{},comment:r.comment||'',lang:r.lang||'fr',
-    contact:has?{prenom:r.prenom||'',nom:r.nom||'',tel:r.tel||'',email:r.email||''}:null,recontact:!!r.recontact,
+    contact:has?{prenom:r.prenom||'',nom:r.nom||'',tel:r.tel||'',email:r.email||''}:null,recontact:!!r.recontact,marketing:!!r.marketing,
     statut:r.statut||'Nouveau',historique:r.historique||[],noteInterne:r.note_interne||''};
 }
 function toRow(a){
   var c=a.contact||{};
   return {id:a.id,service:a.service,lieu:a.lieu||null,note:a.note,details:a.details||{},comment:a.comment||null,lang:a.lang||'fr',
-    prenom:c.prenom||null,nom:c.nom||null,tel:c.tel||null,email:c.email||null,recontact:!!a.recontact};
+    prenom:c.prenom||null,nom:c.nom||null,tel:c.tel||null,email:c.email||null,recontact:!!a.recontact,
+    marketing:a.marketing?true:undefined};
 }
 function fetchAll(){
   var out=[],from=0,step=1000;

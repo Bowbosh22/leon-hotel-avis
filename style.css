@@ -63,3 +63,5 @@ textarea:focus,input:focus{outline:0;border-color:var(--lb)}
 .link{background:none;border:0;color:var(--lb);font:600 1rem var(--text);cursor:pointer;margin-top:1rem;text-decoration:underline}
 [hidden]{display:none!important}
 .foot{text-align:center;color:var(--grey);font-size:.8rem;margin-top:2rem}
+
+.hint.priv{font-size:.78rem;margin-top:.5rem;line-height:1.4;text-align:left}

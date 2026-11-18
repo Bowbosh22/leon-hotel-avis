@@ -20,6 +20,8 @@ var T={
   comment:'Votre commentaire',opt:'(facultatif)',ph:'Ce que vous avez apprécié, ou ce que nous pourrions améliorer…',
   contact:'Vos coordonnées',first:'Prénom',last:'Nom',phone:'Téléphone',email:'E-mail',
   consent:'J\'accepte d\'être recontacté(e) concernant mon expérience.',
+  mkt:'J\'accepte de recevoir les offres et actualités du Léon Hôtel (facultatif).',
+  priv:'Vos coordonnées sont facultatives. Elles servent uniquement au Léon Hôtel à répondre à votre avis et ne sont pas transmises à des tiers. Pour les faire supprimer, adressez-vous à la réception.',
   contactHint:'Ces informations ne sont jamais obligatoires.',
   send:'Envoyer mon avis',needRate:'Choisissez une note pour envoyer.',
   thx:'Merci pour votre avis !',thx2:'Vos remarques nous aident à nous améliorer.',again:'Donner un autre avis',sendErr:"L'envoi a échoué. Vérifiez votre connexion et réessayez.",
@@ -32,6 +34,8 @@ var T={
   comment:'Your comment',opt:'(optional)',ph:'What you enjoyed, or what we could improve…',
   contact:'Your details',first:'First name',last:'Last name',phone:'Phone',email:'Email',
   consent:'I agree to be contacted about my experience.',
+  mkt:'I agree to receive offers and news from Léon Hôtel (optional).',
+  priv:'Your details are optional. They are used only by Léon Hôtel to respond to your review and are not shared with third parties. To have them deleted, please ask at reception.',
   contactHint:'This information is never required.',
   send:'Send my review',needRate:'Choose a rating to send.',
   thx:'Thank you for your review!',thx2:'Your feedback helps us improve.',again:'Leave another review',sendErr:'Sending failed. Check your connection and try again.',
@@ -71,7 +75,7 @@ function render(){
   $('comT').innerHTML=L.comment+' <span class="opt">'+L.opt+'</span>';$('com').placeholder=L.ph;
   $('conT').innerHTML=L.contact+' <span class="opt">'+L.opt+'</span>';
   $('first').placeholder=L.first;$('last').placeholder=L.last;$('phone').placeholder=L.phone;$('email').placeholder=L.email;
-  $('consentT').textContent=L.consent;$('conH').textContent=L.contactHint;
+  $('consentT').textContent=L.consent;$('mktT').textContent=L.mkt;$('privT').textContent=L.priv;$('conH').textContent=L.contactHint;
   $('send').textContent=L.send;$('send').disabled=!S.note;$('hint').textContent=S.note?'':L.needRate;
   $('thx').textContent=L.thx;$('thx2').textContent=L.thx2;$('again').textContent=L.again;
 }
@@ -87,7 +91,7 @@ $('form').addEventListener('submit',function(e){
   var f=$('first').value.trim(),l=$('last').value.trim(),p=$('phone').value.trim(),m=$('email').value.trim();
   var has=f||l||p||m;
   var rec={id:'AV-'+Date.now().toString(36).toUpperCase()+Math.random().toString(36).slice(2,6).toUpperCase(),date:new Date().toISOString(),service:S.service,lieu:S.lieu,note:S.note,details:det,
-    comment:$('com').value.trim(),lang:lang,contact:has?{prenom:f,nom:l,tel:p,email:m}:null,recontact:has&&$('consent').checked,statut:'Nouveau'};
+    comment:$('com').value.trim(),lang:lang,contact:has?{prenom:f,nom:l,tel:p,email:m}:null,recontact:has&&$('consent').checked,marketing:!!(has&&$('mkt').checked),statut:'Nouveau'};
   var done=function(){
     $('got').innerHTML=[1,2,3,4,5].map(function(i){return STAR.replace('<svg','<svg class="'+(i<=S.note?'on':'')+'"')}).join('');
     $('form').hidden=true;$('pick').hidden=true;$('where').hidden=true;document.querySelector('.hero').hidden=true;$('done').hidden=false;window.scrollTo(0,0);
@@ -97,7 +101,7 @@ $('form').addEventListener('submit',function(e){
   Promise.resolve(Store.add(rec)).then(done,function(){$('send').disabled=false;$('hint').textContent=t().sendErr;$('hint').style.color='#b3261e'});
 });
 $('again').addEventListener('click',function(){
-  S.note=0;S.det={};$('hint').style.color='';$('com').value='';['first','last','phone','email'].forEach(function(i){$(i).value=''});$('consent').checked=false;
+  S.note=0;S.det={};$('hint').style.color='';$('com').value='';['first','last','phone','email'].forEach(function(i){$(i).value=''});$('consent').checked=false;$('mkt').checked=false;
   $('done').hidden=true;document.querySelector('.hero').hidden=false;render();window.scrollTo(0,0)});
 render();
 })();
