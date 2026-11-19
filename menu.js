@@ -3,7 +3,7 @@
 function build(){
 var el=document.getElementById('hdr');if(!el)return;
 var act=el.getAttribute('data-active');
-var items=[['admin.html','Tableau de bord','dash'],['stats.html','Stats','stats'],['clients.html','Clients','clients'],['reservations.html','Réservations','resa'],['exports.html','Exports','exports'],['qr.html','QR codes','qr']];
+var items=[['accueil.html','Accueil','home'],['admin.html','Avis','dash'],['stats.html','Stats','stats'],['clients.html','Clients','clients'],['reservations.html','Réservations','resa'],['exports.html','Exports','exports'],['qr.html','QR codes','qr']];
 if(Auth.role()!=='direction')items=items.filter(function(i){return i[2]!=='exports'&&i[2]!=='qr'});
 el.className='hdr noprint';
 el.innerHTML='<div class="top"><div class="wm"><b>LEON</b><i>HOTEL</i></div><button type="button" class="pill" id="out2">Quitter</button></div>'+

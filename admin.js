@@ -138,7 +138,7 @@ $('lf').addEventListener('submit',function(e){
   var b=$('lf').querySelector('button');b.disabled=true;
   Auth.login($('em').value,$('pw').value).then(function(){
     var n=new URLSearchParams(location.search).get('next');
-    if(n&&/^[a-z]+\.html$/.test(n)){location.replace(n);return}
+    location.replace(n&&/^[a-z]+\.html$/.test(n)?n:'accueil.html');return;
     $('pw').value='';b.disabled=false;show();
   },function(err){b.disabled=false;$('lerr').textContent=err.message||'Connexion impossible.'});
 });

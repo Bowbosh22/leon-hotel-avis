@@ -121,3 +121,14 @@
 .rs .notif .act.pri{background:var(--ink);border-color:var(--ink);color:#fff}
 .chips button.s-Co.on{background:#1a7f37;border-color:#1a7f37}.chips button.s-Re.on{background:#b3261e;border-color:#b3261e}.chips button.s-An.on{background:#6b7280;border-color:#6b7280}
 .menu .nb{display:inline-block;margin-left:.4rem;min-width:1.15rem;padding:0 .3rem;border-radius:1rem;background:#b3261e;color:#fff;font-size:.68rem;line-height:1.15rem;text-align:center}
+/* Accueil : choix de la plateforme */
+.hub{display:grid;gap:1rem;margin-top:1.2rem}
+@media(min-width:640px){.hub{grid-template-columns:1fr 1fr}}
+.hubc{display:flex;flex-direction:column;gap:.45rem;background:#fff;border:1.5px solid var(--soft);border-radius:1rem;padding:1.4rem 1.3rem;text-decoration:none;color:inherit;transition:transform .15s,box-shadow .15s,border-color .15s}
+.hubc:hover,.hubc:focus-visible{transform:translateY(-2px);box-shadow:0 8px 22px rgba(10,30,60,.1);border-color:var(--ink,#0b1f3a);outline:none}
+.hubc .hi{font-size:1.9rem;line-height:1}
+.hubc .ht{font:800 1.25rem var(--display)}
+.hubc .hd{color:var(--grey);font-size:.95rem;line-height:1.4}
+.hubc .hs{font-weight:700;font-size:.9rem;margin-top:.3rem;min-height:1.3em}
+.hubc .hs.alert{color:#b42318}
+.hubc .hg{margin-top:.5rem;font:800 .85rem var(--display);letter-spacing:.06em;text-transform:uppercase}
