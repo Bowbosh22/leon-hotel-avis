@@ -14,7 +14,7 @@ function nights(r){return Math.round((new Date(r.depart)-new Date(r.arrivee))/86
 function fmt(n){return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,' ')}
 function st(r){return r.statut||'Nouvelle'}
 /* numéro WhatsApp : chiffres seuls ; un numéro local à 9 chiffres commençant par 0 reçoit l'indicatif du Congo (242) — à confirmer */
-function waNum(tel){var raw=String(tel||'').trim(),d=raw.replace(/\D/g,'');if(raw.charAt(0)==='+')return d;if(d.indexOf('00')===0)return d.slice(2);if(d.length===9&&d.charAt(0)==='0')return '242'+d;return d}
+function waNum(tel){var raw=String(tel||'').trim(),d=raw.replace(/\D/g,'');if(d.indexOf('00')===0&&raw.charAt(0)!=='+')d=d.slice(2),raw='+'+d;if(raw.charAt(0)==='+'){var cc=['212','213','216','221','225','237','241','243','33','32','34','39','41','44','49'];for(var i=0;i<cc.length;i++){if(d.indexOf(cc[i]+'0')===0){d=cc[i]+d.slice(cc[i].length+1);break}}return d}if(d.length===9&&d.charAt(0)==='0')return '242'+d;return d}
 function msg(r,kind){
   var n=nights(r),ch=CH[r.chambre]||r.chambre,en=r.lang==='en',a=dfr(r.arrivee,r.lang),d=dfr(r.depart,r.lang),tot=r.total?fmt(r.total)+' FCFA':'';
   if(kind==='Confirmée'){
