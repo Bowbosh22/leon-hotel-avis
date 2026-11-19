@@ -31,9 +31,10 @@ function notify(r){
   var k=st(r);if(k==='Nouvelle')return '';
   var t=msg(r,k),en=r.lang==='en',subj=(k==='Confirmée'?(en?'Reservation confirmed ':'Réservation confirmée '):k==='Refusée'?(en?'Your request ':'Votre demande '):(en?'Reservation cancelled ':'Réservation annulée '))+r.id;
   var wa=waNum(r.tel)?'<a class="act'+(r.canal==='whatsapp'?' pri':'')+'" href="https://wa.me/'+waNum(r.tel)+'?text='+encodeURIComponent(t)+'" target="_blank" rel="noopener">Prévenir par WhatsApp</a>':'';
-  var ml=r.email?'<a class="act'+(r.canal==='email'?' pri':'')+'" href="mailto:'+esc(r.email)+'?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(t)+'">Prévenir par e-mail</a>':'';
+  var ml=r.email?'<a class="act'+(r.canal==='email'?' pri':'')+'" href="https://mail.google.com/mail/?view=cm&fs=1&to='+encodeURIComponent(r.email)+'&su='+encodeURIComponent(subj)+'&body='+encodeURIComponent(t)+'" target="_blank" rel="noopener">Prévenir par e-mail (Gmail)</a><a class="act" href="mailto:'+esc(r.email)+'?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(t)+'">Autre messagerie</a>':'';
+  var cp='<button type="button" class="act copyb" data-t="'+encodeURIComponent(t)+'">Copier le message</button>';
   var pref=r.canal==='email'?'e-mail':'WhatsApp';
-  return '<div class="notif"><p class="who">Le client souhaite être prévenu par <b>'+pref+'</b>. Le message est déjà rédigé, vous pouvez le modifier avant l\'envoi.</p><div class="acts2">'+(r.canal==='email'?ml+wa:wa+ml)+'</div></div>';
+  return '<div class="notif"><p class="who">Le client souhaite être prévenu par <b>'+pref+'</b>. Le message est déjà rédigé, vous pouvez le modifier avant l\'envoi.</p><div class="acts2">'+(r.canal==='email'?ml+wa:wa+ml)+cp+'</div></div>';
 }
 function card(r){
   var n=nights(r),ch=CH[r.chambre]||r.chambre,s=st(r);
@@ -59,6 +60,9 @@ function render(){
 }
 var tt;function toast(m){var t=$('toast');t.textContent=m;t.hidden=false;clearTimeout(tt);tt=setTimeout(function(){t.hidden=true},5000)}
 function dirty(c){var b=c.querySelector('.notesave'),m=c.querySelector('.notemsg');b.disabled=false;m.className='notemsg dirty';m.textContent='Modifications non validées'}
+$('list').addEventListener('click',function(e){var b=e.target.closest('.copyb');if(!b)return;var s=decodeURIComponent(b.dataset.t);
+  function fb(){var a=document.createElement('textarea');a.value=s;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();try{document.execCommand('copy');toast('✓ Message copié : collez-le dans WhatsApp, un e-mail ou un SMS')}catch(x){toast('Copie impossible : sélectionnez le texte à la main')}document.body.removeChild(a)}
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(s).then(function(){toast('✓ Message copié : collez-le dans WhatsApp, un e-mail ou un SMS')},fb);else fb()});
 $('tabs').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;tab=b.dataset.t;render()});
 $('list').addEventListener('click',function(e){
   var c=e.target.closest('.rs');if(!c)return;
