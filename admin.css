@@ -133,3 +133,5 @@
 .hubc .hs.alert{color:#b42318}
 .hubc .hg{margin-top:.5rem;font:800 .85rem var(--display);letter-spacing:.06em;text-transform:uppercase}
 .rs .notif button.act{cursor:pointer}.rs .notif .act:hover{border-color:var(--ink)}
+
+.srch{display:block;width:100%;font:inherit;padding:.8rem 1rem;margin:.9rem 0 .2rem;border:1.5px solid var(--soft);border-radius:.7rem;background:#fff;box-sizing:border-box}.srch:focus{outline:2px solid var(--ink);outline-offset:1px}

@@ -54,7 +54,10 @@ function render(){
   var L=Resa.all().sort(function(a,b){return a.date<b.date?-1:1}),cn={};
   STAT.forEach(function(x){cn[x]=0});L.forEach(function(r){cn[st(r)]=(cn[st(r)]||0)+1});
   $('tabs').innerHTML=STAT.map(function(x){return '<button type="button" data-t="'+x+'" aria-pressed="'+(x===tab)+'"><b>'+cn[x]+'</b>'+x+'</button>'}).join('');
-  var sel=L.filter(function(r){return st(r)===tab});if(tab!=='Nouvelle')sel.reverse();
+  var q=($('q').value||'').trim().toLowerCase().replace(/\s+/g,' '),qd=q.replace(/\D/g,''),sel;
+  if(q){sel=L.filter(function(r){return (r.id+' '+r.nom+' '+(r.email||'')).toLowerCase().indexOf(q)>-1||(qd.length>=3&&String(r.tel||'').replace(/\D/g,'').indexOf(qd)>-1)}).reverse();
+    $('qinfo').hidden=false;$('qinfo').textContent=sel.length?sel.length+(sel.length>1?' résultats':' résultat')+' pour « '+$('q').value.trim()+' », toutes demandes confondues.':'Aucune demande trouvée pour « '+$('q').value.trim()+' ».'}
+  else{$('qinfo').hidden=true;sel=L.filter(function(r){return st(r)===tab});if(tab!=='Nouvelle')sel.reverse()}
   $('list').innerHTML=sel.map(card).join('');$('none').hidden=sel.length>0;
   L.forEach(function(r){known[r.id]=1});
 }
@@ -63,6 +66,7 @@ function dirty(c){var b=c.querySelector('.notesave'),m=c.querySelector('.notemsg
 $('list').addEventListener('click',function(e){var b=e.target.closest('.copyb');if(!b)return;var s=decodeURIComponent(b.dataset.t);
   function fb(){var a=document.createElement('textarea');a.value=s;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();try{document.execCommand('copy');toast('✓ Message copié : collez-le dans WhatsApp, un e-mail ou un SMS')}catch(x){toast('Copie impossible : sélectionnez le texte à la main')}document.body.removeChild(a)}
   if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(s).then(function(){toast('✓ Message copié : collez-le dans WhatsApp, un e-mail ou un SMS')},fb);else fb()});
+$('q').addEventListener('input',render);
 $('tabs').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;tab=b.dataset.t;render()});
 $('list').addEventListener('click',function(e){
   var c=e.target.closest('.rs');if(!c)return;
