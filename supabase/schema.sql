@@ -98,3 +98,4 @@ grant execute on function public.ping() to anon, authenticated;
 -- select id, 'direction' from auth.users where email = 'directeur@exemple.com';
 -- insert into public.staff (user_id, role)
 -- select id, 'reception' from auth.users where email in ('reception1@exemple.com','reception2@exemple.com');
+-- 7) Demandes de réservation : voir supabase/reservations.sql (à exécuter une fois).

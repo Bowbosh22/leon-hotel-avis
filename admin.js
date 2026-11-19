@@ -41,6 +41,15 @@ function seed(){
     if(age>14)st=(k%3===0)?'Traité':'Clos';else st=['Nouveau','Nouveau','Nouveau','En cours','En cours','Traité','Clos'][k%7];
     k++;out[j].statut=st;if(st!=='Nouveau')out[j].historique=[{s:st,date:new Date(new Date(out[j].date).getTime()+36e5*3).toISOString()}]}}
   Store.save(out);
+  function ds(n){var d=new Date(now+n*864e5);return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)}
+  var RS=[['Awa Ndinga','+242 06 412 31 08','awa.ndinga@exemple.com','email','standard',9,12,2,0.2,'Nouvelle',''],
+   ['Jean Mavoungou','+242 05 521 77 90','','whatsapp','semi-luxe',15,18,1,0.5,'Nouvelle','Arrivée tardive vers 22 h'],
+   ['Marie Okemba','+242 06 788 02 14','marie.okemba@exemple.com','whatsapp','grand-luxe',21,24,2,1.2,'Nouvelle','Lit supplémentaire souhaité'],
+   ['Paul Itoua','+242 05 604 19 33','','whatsapp','semi-grand-luxe',6,8,2,3,'Confirmée',''],
+   ['Grâce Mabiala','+242 06 230 45 61','grace.m@exemple.com','email','standard',4,5,1,4,'Refusée','']];
+  var PR={'standard':85000,'semi-luxe':100000,'semi-grand-luxe':120000,'grand-luxe':140000};
+  Resa.save(RS.map(function(x,i){var n=x[6]-x[5];return {id:'RES-D'+(100+i),date:new Date(now-x[8]*864e5).toISOString(),arrivee:ds(x[5]),depart:ds(x[6]),personnes:x[7]+0,chambre:x[4],total:PR[x[4]]*n,
+    nom:x[0],tel:x[1],email:x[2],canal:x[3],message:x[10],lang:'fr',statut:x[9],historique:x[9]==='Nouvelle'?[]:[{s:x[9],date:new Date(now-(x[8]-0.1)*864e5).toISOString()}],noteInterne:''}}));
 }
 
 /* ---- affichage ---- */
@@ -63,7 +72,9 @@ function revHtml(a,mode){
   }
   return h+'</div>';
 }
-function render(){
+function bannerR(){var n=Resa.all().filter(function(r){return (r.statut||'Nouvelle')==='Nouvelle'}).length,b=$('bannerR');if(!b)return;
+  b.hidden=n===0;b.textContent=n?'🛎 '+n+(n>1?' nouvelles demandes de réservation':' nouvelle demande de réservation')+' à traiter':''}
+function render(){bannerR();
   var L=Store.all().sort(function(a,b){return a.date<b.date?1:-1});
   $('empty').hidden=L.length>0;$('main').hidden=L.length===0;$('banner').hidden=true;
   $('upd').textContent=L.length?'Mis à jour à '+two(new Date().getHours())+':'+two(new Date().getMinutes()):'';
@@ -110,9 +121,16 @@ Store.watch(function(){
   render();
   if(fresh.length){var a=fresh[fresh.length-1];toast('Nouvel avis négatif : '+(a.lieu||SVC[a.service])+' · '+a.note+' ★')}
 });
+Resa.watch(function(){
+  if(!Auth.isIn())return;
+  var fresh=Resa.all().filter(function(r){return (r.statut||'Nouvelle')==='Nouvelle'&&!knownR[r.id]});
+  Resa.all().forEach(function(r){knownR[r.id]=1});bannerR();
+  if(fresh.length)toast('Nouvelle demande de réservation : '+fresh[fresh.length-1].nom);
+});
+var knownR={};
 function show(){
   var ok=Auth.isIn();$('login').hidden=ok;$('dash').hidden=!ok;
-  if(ok){if(window.Menu)Menu.build();Store.ready().then(render)}
+  if(ok){if(window.Menu)Menu.build();Promise.all([Store.ready(),Resa.ready()]).then(render)}
 }
 if(Auth.remote){$('em').hidden=false;$('seed').hidden=true;$('clr').hidden=true;$('lerr').textContent=''}
 $('lf').addEventListener('submit',function(e){

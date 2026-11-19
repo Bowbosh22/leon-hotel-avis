@@ -58,7 +58,7 @@ window.Auth={
   },
   out:function(){
     if(!REMOTE){try{sessionStorage.removeItem(AK)}catch(e){}return}
-    var s=sess();setSess(null);readyP=null;cache=[];
+    var s=sess();setSess(null);readyP=null;cache=[];rready=null;rcache=[];
     if(s)http('POST','/auth/v1/logout',{token:s.access_token}).catch(function(){});
   }
 };
@@ -134,5 +134,57 @@ window.Store={
   },
   cfg:function(){try{return JSON.parse(localStorage.getItem('leon_cfg')||'{}')}catch(e){return {}}},
   setCfg:function(c){try{localStorage.setItem('leon_cfg',JSON.stringify(c))}catch(e){}}
+};
+
+/* ---- Demandes de réservation (même principe que les avis) ---- */
+var RKEY='leon_resa_v1',rcache=[],rmem=[],rready=null;
+function fromRowR(r){
+  return {id:r.id,date:r.created_at,arrivee:r.arrivee,depart:r.depart,personnes:r.personnes,chambre:r.chambre,total:r.total_estime,
+    nom:r.nom,tel:r.tel,email:r.email||'',canal:r.canal||'whatsapp',message:r.message||'',lang:r.lang||'fr',
+    statut:r.statut||'Nouvelle',historique:r.historique||[],noteInterne:r.note_interne||''};
+}
+function fetchAllR(){
+  var out=[],from=0,step=1000;
+  function page(){
+    return Auth.token().then(function(t){return http('GET','/rest/v1/reservations?select=*&order=created_at.asc',{token:t,h:{'Range-Unit':'items',Range:from+'-'+(from+step-1)}})}).then(function(r){
+      var d=r.data||[];out=out.concat(d);
+      if(d.length===step&&out.length<20000){from+=step;return page()}
+      return out;
+    });
+  }
+  return page();
+}
+window.Resa={
+  remote:REMOTE,
+  ready:function(){
+    if(rready)return rready;
+    if(!REMOTE||!Auth.isIn())return Promise.resolve();
+    rready=fetchAllR().then(function(rows){rcache=rows.map(fromRowR)},function(e){
+      if(!Auth.isIn()){location.replace('admin.html');return}
+      bar(e.message||'Impossible de charger les réservations.');
+    });
+    return rready;
+  },
+  all:function(){
+    if(REMOTE)return rcache.slice();
+    try{return JSON.parse(localStorage.getItem(RKEY)||'[]')}catch(e){return rmem.slice()}
+  },
+  save:function(l){if(REMOTE)return;try{localStorage.setItem(RKEY,JSON.stringify(l))}catch(e){rmem=l}},
+  update:function(id,fn){
+    if(!REMOTE){var l=this.all();for(var i=0;i<l.length;i++){if(l[i].id===id){fn(l[i]);break}}this.save(l);return Promise.resolve(true)}
+    var o=null;for(var j=0;j<rcache.length;j++){if(rcache[j].id===id){o=rcache[j];break}}
+    if(!o)return Promise.resolve(false);fn(o);
+    return Auth.token().then(function(t){return http('PATCH','/rest/v1/reservations?id=eq.'+encodeURIComponent(id),{token:t,h:{Prefer:'return=minimal'},body:{statut:o.statut||'Nouvelle',note_interne:o.noteInterne||null,historique:o.historique||[]}})}).then(function(){return true},function(e){bar('Modification non enregistrée : '+e.message);return false});
+  },
+  watch:function(fn){
+    if(!REMOTE){window.addEventListener('storage',function(e){if(e.key===RKEY)fn()});return}
+    setInterval(function(){
+      if(!Auth.isIn())return;
+      fetchAllR().then(function(rows){
+        var n=rows.map(fromRowR),sig=function(l){return l.length+'|'+(l.length?l[l.length-1].id:'')};
+        if(sig(n)!==sig(rcache)){rcache=n;fn()}
+      }).catch(function(){});
+    },Number(CFG.POLL_MS)||30000);
+  }
 };
 })();

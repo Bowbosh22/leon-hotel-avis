@@ -111,3 +111,13 @@
 .notemsg.ok{color:#0a7a2f;font-weight:700}.notemsg.err{color:#b3261e;font-weight:700}.notemsg.dirty{color:#a15c00}
 
 .chips button.sel{border-color:var(--ink);box-shadow:0 0 0 2px var(--ink) inset;color:var(--ink)}
+
+/* Réservations */
+.rs .rline{font-size:.95rem;margin:.35rem 0 .1rem}
+.rs .rmsg{font-style:italic;color:var(--grey);font-size:.9rem}
+.rs .notif{margin-top:.8rem;padding:.8rem;border-radius:.7rem;background:#f1f6ff;border:1px solid #d3e2f7}
+.rs .notif .acts2{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:.5rem}
+.rs .notif .act{font:700 .78rem var(--display);letter-spacing:.04em;text-transform:uppercase;text-decoration:none;color:var(--ink);background:#fff;border:1.5px solid var(--soft);border-radius:2rem;padding:.55rem .9rem}
+.rs .notif .act.pri{background:var(--ink);border-color:var(--ink);color:#fff}
+.chips button.s-Co.on{background:#1a7f37;border-color:#1a7f37}.chips button.s-Re.on{background:#b3261e;border-color:#b3261e}.chips button.s-An.on{background:#6b7280;border-color:#6b7280}
+.menu .nb{display:inline-block;margin-left:.4rem;min-width:1.15rem;padding:0 .3rem;border-radius:1rem;background:#b3261e;color:#fff;font-size:.68rem;line-height:1.15rem;text-align:center}
